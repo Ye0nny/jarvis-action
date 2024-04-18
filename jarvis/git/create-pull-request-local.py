@@ -65,15 +65,12 @@ def run():
         # os.system("git clean -xdf")
         os.system(f"git checkout {GITHUB_REF_NAME}")
         os.system("git checkout .")
-        print("[+] git checkout... finished\n")
         now = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
         patch_branch = f"{GITHUB_REF_NAME}-auto-patch-{now}"
         os.system(f"git checkout -b {patch_branch}")
-        print("[+] git checkout -b... finished\n")
         # print("find . -type f -exec dos2unix {{}} \;")
         # os.system("find . -type f -exec dos2unix {{}} \;")
         diff_list = _gen_diff_list()
-        print("[+] diff\n")
         for diff in diff_list:
             print(diff)
             # print(diff.replace(".diff", "").replace("/outputs", JARVIS_TARGET))
@@ -82,24 +79,16 @@ def run():
             print(target_path)
             # py_dos2unix(target_path)
             os.system(f"git apply < {diff}")
-        print("[+] git apply... finished\n")
         os.system(f"git add .")
-        print("[+] git add.. finished\n")
         os.system(f"git commit -m \"Fixed automatically #{PR_INFO['issue_number']} by JARVIS\"")
-        print("[+] git commit.. finished\n")
-        os.system(f"gh auth login --with-token < {JARVIS_WORKSPACE}/token.txt")
-        #os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
-        print("[+] git authentication.. finished\n")
+        os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
         os.system(f"git push origin {patch_branch}")
-        print("[+] git push.. finished\n")
         create_pull_request(patch_branch)
-        print("[+] PR.. finished\n")
         os.system(f"git checkout {GITHUB_REF_NAME}")
-        print("[+] git checkout.. finished\n")
     
     except Exception as e:
         print(f"[Error] {e}")
 
-
+print(f"[+] github_action_path : {GITHUB_ACTION_PATH}")
 construct_pr_info()
 run()
