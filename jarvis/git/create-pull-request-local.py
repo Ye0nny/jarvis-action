@@ -48,10 +48,15 @@ def create_pull_request(patch_branch):
 
     token_path = f"{GITHUB_ACTION_PATH}/token.txt"
     with open(token_path, 'r') as token_file:
-        token = token_file.read().strip() 
+        token = token_file.read().strip()
+        
+    logout_result = subprocess.run(['gh', 'auth', 'logout', '-h', 'github.com', '-u', 'github-actions[bot]', '--confirm'], capture_output=True, text=True)
+    print("Logout STDOUT:", logout_result.stdout)
+    print("Logout STDERR:", logout_result.stderr)
 
     env = os.environ.copy()
     env['GH_TOKEN'] = token
+
     subprocess.run(['gh', 'auth', 'login', '--with-token'], input=env['GH_TOKEN'], text=True, env=env)
     result = subprocess.run(['gh', 'auth', 'status'],capture_output=True)
     print("STDOUT:", result.stdout)
