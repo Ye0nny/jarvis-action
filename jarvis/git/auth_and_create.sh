@@ -31,6 +31,12 @@ _create_issue() {
 python3 $JARVIS_WORKSPACE/scripts/git/issue_title_generator.py
 python3 $JARVIS_WORKSPACE/scripts/git/issue_body_generator.py
 
+echo "===== just debug =====\n"
+echo $GITHUB_ACTORY
+echo "$(cat $JARVIS_OUTPUT_DIR/issue_title)"
+echo "$(cat $JARVIS_OUTPUT_DIR/issue_body)"
+echo "======================\n"
+
 _create_issue 
 # python3 $JARVIS_WORKSPACE/scripts/git/create-pull-request.py
 # rm $JARVIS_WORKSPACE/token.txt
