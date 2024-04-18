@@ -42,24 +42,28 @@ def run():
 
     patch_path = f"{output_dir}/fix_violation.patch"
     print(f"Patch path: {patch_path}")
-    
-    os.system("git clean -xdf")
-    os.system(f"git checkout {GITHUB_REF_NAME}")
-    os.system("git checkout .")
-    now = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
-    patch_branch = f"{GITHUB_REF_NAME}-auto-patch-{now}"
-    os.system(f"git checkout -b {patch_branch}")
-    os.system(f"git apply < {patch_path}")
-    os.system(f"git add .")
-    os.system(f"git commit -m \"Fixed automatically #{PR_INFO['issue_number']} by Vulcan\"")
-    # remote = subprocess.check_output("git remote -v")
-    os.system(f"git remote remove origin")
-    os.system(f"git remote add origin https://{TOKEN}@github.com/{GITHUB_REPOSITORY}")
-    print(f"git remote add origin https://{TOKEN}@github.com/{GITHUB_REPOSITORY}")
-    os.system(f"gh auth login --with-token < {JARVIS_WORKSPACE}/token.txt")
-    os.system(f"git push origin {patch_branch}")
-    create_pull_request(patch_branch)
-    os.system(f"git checkout {GITHUB_REF_NAME}")
+    try:
+        os.system("git clean -xdf")
+        os.system(f"git checkout {GITHUB_REF_NAME}")
+        os.system("git checkout .")
+        now = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
+        patch_branch = f"{GITHUB_REF_NAME}-auto-patch-{now}"
+        os.system(f"git checkout -b {patch_branch}")
+        os.system(f"git apply < {patch_path}")
+        os.system(f"git add .")
+        os.system(f"git commit -m \"Fixed automatically #{PR_INFO['issue_number']} by Vulcan\"")
+        # remote = subprocess.check_output("git remote -v")
+        os.system(f"git remote remove origin")
+        os.system(f"git remote add origin https://{TOKEN}@github.com/{GITHUB_REPOSITORY}")
+        print(f"git remote add origin https://{TOKEN}@github.com/{GITHUB_REPOSITORY}")
+        os.system(f"gh auth login --with-token < {JARVIS_WORKSPACE}/token.txt")
+        os.system(f"git push origin {patch_branch}")
+        create_pull_request(patch_branch)
+        os.system(f"git checkout {GITHUB_REF_NAME}")
+
+    except Exception as e:
+        print("[Error] e\n")
+
 
 
 construct_pr_info()
