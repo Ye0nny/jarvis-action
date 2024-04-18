@@ -46,24 +46,13 @@ def create_pull_request(patch_branch):
     #pr_command = f"gh pr create -B {GITHUB_REF_NAME} -H {patch_branch} -t \"{pr_title}\" -b\"{pr_body}\""
     #os.system(pr_command)
 
-    # token_path = f"{GITHUB_ACTION_PATH}/token.txt"
-    # with open(token_path, 'r') as token_file:
-    #     token = token_file.read().strip()
-    #     print(f"token_len: {len(token)}")
-
     token = os.getenv('REPO_TOKEN')
 
     subprocess.run(['gh', 'auth', 'login', '--with-token'], input=token, text=True)
     result = subprocess.run(['gh', 'auth', 'status'],capture_output=True)
     print("STDOUT:", result.stdout)
     print("STDERR:", result.stderr)
-    pr_command = [
-        "gh", "pr", "create",
-        "-B", GITHUB_REF_NAME,
-        "-H", patch_branch,
-        "-t", pr_title,
-        "-b", pr_body
-    ]
+    pr_command = ["gh", "pr", "create", "-B", GITHUB_REF_NAME, "-H", patch_branch, "-t", pr_title, "-b", pr_body]
     result = subprocess.run(pr_command, text=True, capture_output=True)
 
     if result.returncode == 0:
@@ -106,9 +95,6 @@ def run():
             os.system(f"git apply < {diff}")
         os.system(f"git add .")
         os.system(f"git commit -m \"Fixed automatically #{PR_INFO['issue_number']} by JARVIS\"")
-
-        os.system("echo debugging!!!")
-        os.system(f"ls {GITHUB_ACTION_PATH}")
         # os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
         os.system(f"git push origin {patch_branch}")
         create_pull_request(patch_branch)
