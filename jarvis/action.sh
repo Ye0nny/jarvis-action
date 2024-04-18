@@ -111,7 +111,8 @@ pip install gitpython
 cd $GITHUB_WORKSPACE
 echo $GITHUB_WORKSPACE
 
-python3 $GITHUB_ACTION_PATH/jarvis/git/create-pull-request-local.py                                            
+python3 $GITHUB_ACTION_PATH/jarvis/git/create-pull-request.py                                            
+#python3 $GITHUB_ACTION_PATH/jarvis/git/create-pull-request-local.py                                            
 
 echo "python3 test"
 
