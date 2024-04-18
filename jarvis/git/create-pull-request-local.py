@@ -81,6 +81,9 @@ def run():
             os.system(f"git apply < {diff}")
         os.system(f"git add .")
         os.system(f"git commit -m \"Fixed automatically #{PR_INFO['issue_number']} by JARVIS\"")
+
+        os.system("echo debugging!!!")
+        os.system(f"ls {GITHUB_ACTION_PATH}")
         os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
         os.system(f"git push origin {patch_branch}")
         create_pull_request(patch_branch)
