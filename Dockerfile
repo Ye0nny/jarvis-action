@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 ENV ACTION_CALL=TRUE
-ENV PATH=/home/workspace/tbeg/apps/csbuild-ubuntu-20.04_v1.2.0/bin:$PATH
+ENV PATH="/home/workspace/tbeg/apps/csbuild-ubuntu-20.04 v1.2.0/bin":$PATH
 
 ENV TZ=Asia/Kolkata \
     DEBIAN_FRONTEND=noninteractive
