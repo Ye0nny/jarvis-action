@@ -42,6 +42,7 @@ def create_pull_request(patch_branch):
     pr_title = PR_INFO["title"]
     commit = os.getenv('GITHUB_SHA')
     print("[DEBUG] PR")
+    os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
     pr_body = f"This PR is auto-patch by JARVIS for commit: {commit} Fixed #{PR_INFO['issue_number']}"
     pr_command = f"gh pr create -B {GITHUB_REF_NAME} -H {patch_branch} -t \"{pr_title}\" -b\"{pr_body}\""
     os.system(pr_command)
@@ -83,8 +84,6 @@ def run():
         os.system(f"git commit -m \"Fixed automatically #{PR_INFO['issue_number']} by JARVIS\"")
 
         os.system("echo debugging!!!")
-        os.system("id")
-        os.system("pwd")
         os.system(f"ls {GITHUB_ACTION_PATH}")
         os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
         os.system(f"git push origin {patch_branch}")
