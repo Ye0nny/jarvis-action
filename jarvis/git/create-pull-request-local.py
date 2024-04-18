@@ -43,8 +43,21 @@ def create_pull_request(patch_branch):
     commit = os.getenv('GITHUB_SHA')
     print("[DEBUG] PR")
     pr_body = f"This PR is auto-patch by JARVIS for commit: {commit} Fixed #{PR_INFO['issue_number']}"
-    pr_command = f"gh pr create -B {GITHUB_REF_NAME} -H {patch_branch} -t \"{pr_title}\" -b\"{pr_body}\""
-    os.system(pr_command)
+    #pr_command = f"gh pr create -B {GITHUB_REF_NAME} -H {patch_branch} -t \"{pr_title}\" -b\"{pr_body}\""
+    #os.system(pr_command)
+    pr_command = [
+        "gh", "pr", "create",
+        "-B", GITHUB_REF_NAME,
+        "-H", patch_branch,
+        "-t", pr_title,
+        "-b", pr_body
+    ]
+    result = subprocess.run(pr_command, text=True, capture_output=True)
+
+    if result.returncode == 0:
+        print("PR Success", result.stdout)
+    else:
+        print("PR Failed", result.stderr)
 
 
 # def py_dos2unix(inf):
