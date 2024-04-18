@@ -82,7 +82,6 @@ docker exec -iu 0 jarvis-ubuntu20.04 sh -c "pip install -r $JARVIS_WORKSPACE/JAR
                                             export CSBUILD_USER_OPTION='$CSBUILD_USER_OPTION'; \
                                             export INIT_PATH='$INIT_PATH'; \
                                             python3 $JARVIS_WORKSPACE/JARVIS/main.py"
-fi                                            
 
 
 retval=$?
