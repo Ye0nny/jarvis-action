@@ -38,26 +38,34 @@ def _gen_diff_list():
     return diff_list
 
 
-# def create_pull_request(patch_branch):
-#     pr_title = PR_INFO["title"]
-#     commit = os.getenv('GITHUB_SHA')
-#     print("[DEBUG] PR")
-#     pr_body = f"This PR is auto-patch by JARVIS for commit: {commit} Fixed #{PR_INFO['issue_number']}"
-#     #pr_command = f"gh pr create -B {GITHUB_REF_NAME} -H {patch_branch} -t \"{pr_title}\" -b\"{pr_body}\""
-#     #os.system(pr_command)
-#     pr_command = [
-#         "gh", "pr", "create",
-#         "-B", GITHUB_REF_NAME,
-#         "-H", patch_branch,
-#         "-t", pr_title,
-#         "-b", pr_body
-#     ]
-#     result = subprocess.run(pr_command, text=True, capture_output=True)
+def create_pull_request(patch_branch):
+    pr_title = PR_INFO["title"]
+    commit = os.getenv('GITHUB_SHA')
+    print("[DEBUG] PR")
+    pr_body = f"This PR is auto-patch by JARVIS for commit: {commit} Fixed #{PR_INFO['issue_number']}"
+    #pr_command = f"gh pr create -B {GITHUB_REF_NAME} -H {patch_branch} -t \"{pr_title}\" -b\"{pr_body}\""
+    #os.system(pr_command)
 
-#     if result.returncode == 0:
-#         print("PR Success", result.stdout)
-#     else:
-#         print("PR Failed", result.stderr)
+    token_path = f"{GITHUB_ACTION_PATH}/token.txt"
+    with open(token_path, 'r') as token_file:
+        token = token_file.read().strip() 
+
+    env = os.environ.copy()
+    env['GH_TOKEN'] = token
+    subprocess.run(['gh', 'auth', 'login', '--with-token'], input=env['GH_TOKEN'], text=True, env=env)
+    pr_command = [
+        "gh", "pr", "create",
+        "-B", GITHUB_REF_NAME,
+        "-H", patch_branch,
+        "-t", pr_title,
+        "-b", pr_body
+    ]
+    result = subprocess.run(pr_command, text=True, capture_output=True)
+
+    if result.returncode == 0:
+        print("PR Success", result.stdout)
+    else:
+        print("PR Failed", result.stderr)
 
 
 # def py_dos2unix(inf):
@@ -97,15 +105,9 @@ def run():
 
         os.system("echo debugging!!!")
         os.system(f"ls {GITHUB_ACTION_PATH}")
-        os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
+        # os.system(f"gh auth login --with-token < {GITHUB_ACTION_PATH}/token.txt")
         os.system(f"git push origin {patch_branch}")
-        # create_pull_request(patch_branch)
-        pr_title = PR_INFO["title"]
-        commit = os.getenv('GITHUB_SHA')
-        print("[DEBUG] PR")
-        pr_body = f"This PR is auto-patch by JARVIS for commit: {commit} Fixed #{PR_INFO['issue_number']}"
-        pr_command = f"gh pr create -B {GITHUB_REF_NAME} -H {patch_branch} -t \"{pr_title}\" -b\"{pr_body}\""
-        os.system(pr_command)
+        create_pull_request(patch_branch)
         os.system(f"git checkout {GITHUB_REF_NAME}")
     
     except Exception as e:
