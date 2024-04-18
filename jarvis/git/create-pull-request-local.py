@@ -53,6 +53,9 @@ def create_pull_request(patch_branch):
     env = os.environ.copy()
     env['GH_TOKEN'] = token
     subprocess.run(['gh', 'auth', 'login', '--with-token'], input=env['GH_TOKEN'], text=True, env=env)
+    result = subprocess.run(['gh', 'auth', 'status'],capture_output=True)
+    print("STDOUT:", result.stdout)
+    print("STDERR:", result.stderr)
     pr_command = [
         "gh", "pr", "create",
         "-B", GITHUB_REF_NAME,
